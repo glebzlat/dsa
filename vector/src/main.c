@@ -1,6 +1,8 @@
 #include "vector.h"
 #include <assert.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int is_ten(void* data) {
   return *(int*)data == 10;
@@ -12,14 +14,14 @@ int is_twenty(void* data) {
 
 int main(void) {
   {
-    // create and delete the vector
+    printf("TEST: create and delete the vector");
 
     vector* v = vector_init(4);
     vector_deinit(v);
   }
 
   {
-    // vector is empty
+    printf("TEST: vector is empty\n");
 
     vector* v = vector_init(4);
 
@@ -30,7 +32,7 @@ int main(void) {
   }
 
   {
-    // push elements to the vector
+    printf("TEST: push elements to the vector\n");
 
     vector* v = vector_init(4);
 
@@ -52,7 +54,7 @@ int main(void) {
   }
 
   {
-    // prepend elements to the vector
+    printf("TEST: prepend elements to the vector\n");
 
     vector* v = vector_init(4);
 
@@ -73,7 +75,7 @@ int main(void) {
   }
 
   {
-    // insert elements into the vector
+    printf("TEST: insert elements into the vector\n");
 
     vector* v = vector_init(4);
 
@@ -97,7 +99,7 @@ int main(void) {
   }
 
   {
-    // pop elements from the vector
+    printf("TEST: pop elements from the vector\n");
 
     vector* v = vector_init(4);
 
@@ -109,16 +111,44 @@ int main(void) {
     vector_push(v, &e2);
     vector_push(v, &e3);
 
-    assert(*(int32_t*)vector_pop(v) == 3);
-    assert(*(int32_t*)vector_pop(v) == 2);
-    assert(*(int32_t*)vector_pop(v) == 1);
+    void* p1 = vector_pop(v);
+    void* p2 = vector_pop(v);
+    void* p3 = vector_pop(v);
+
+    assert(*(int32_t*)p1 == 3);
+    assert(*(int32_t*)p2 == 2);
+    assert(*(int32_t*)p3 == 1);
     assert(vector_size(v) == 0);
 
     vector_deinit(v);
+
+    free(p1);
+    free(p2);
+    free(p3);
   }
 
   {
-    // pop elements from the beginning
+    printf("TEST: vector is resized when an element is popped\n");
+
+    vector* v = vector_init(4);
+
+    for (int32_t i = 1; i <= 17; ++i) {
+      int32_t el = i | i << 8 | i << 16 | i << 24;
+      vector_push(v, &el);
+    }
+
+    assert(vector_capacity(v) == 32);
+
+    void* p = vector_pop(v);
+    assert(*(int32_t*)p == 0x11111111);
+
+    vector_deinit(v);
+
+    free(p);
+  }
+
+  {
+    printf("TEST: pop elements from the beginning\n");
 
     vector* v = vector_init(4);
 
@@ -130,16 +160,22 @@ int main(void) {
     vector_push(v, &e2);
     vector_push(v, &e3);
 
-    assert(*(int32_t*)vector_pop_front(v) == 1);
-    assert(*(int32_t*)vector_pop_front(v) == 2);
-    assert(*(int32_t*)vector_pop_front(v) == 3);
+    void* p1 = vector_pop_front(v);
+    void* p2 = vector_pop_front(v);
+    void* p3 = vector_pop_front(v);
+    assert(*(int32_t*)p1 == 1);
+    assert(*(int32_t*)p2 == 2);
+    assert(*(int32_t*)p3 == 3);
+    free(p1);
+    free(p2);
+    free(p3);
     assert(vector_size(v) == 0);
 
     vector_deinit(v);
   }
 
   {
-    // delete element at index
+    printf("TEST: delete element at index\n");
 
     vector* v = vector_init(4);
 
@@ -165,7 +201,7 @@ int main(void) {
   }
 
   {
-    // remove all elements on which predicate is true
+    printf("TEST: remove all elements on which predicate is true\n");
 
     vector* v = vector_init(4);
 
@@ -182,9 +218,9 @@ int main(void) {
     vector_push(v, &e3);
     vector_push(v, &e10);
 
-    assert(vector_size(v) == 6);
+    assert(vector_size(v) == 7);
     assert(*(int32_t*)vector_at(v, 0) == 10);
-    assert(*(int32_t*)vector_at(v, 5) == 10);
+    assert(*(int32_t*)vector_at(v, 6) == 10);
 
     vector_remove(v, is_ten);
 
@@ -196,8 +232,8 @@ int main(void) {
   }
 
   {
-    // get an index of an element on which predicate is true
-    // if there is no such element, returns -1
+    printf("TEST: get an index of an element on which predicate is true\n");
+    printf("      if there is no such element, returns -1\n");
 
     vector* v = vector_init(4);
 
@@ -219,8 +255,8 @@ int main(void) {
   }
 
   {
-    // vector allocates more memory when it is full
-    // initial capacity = 16 and increases by 2
+    printf("TEST: vector allocates more memory when it is full\n");
+    printf("      initial capacity = 16 and increases by 2\n");
 
     vector* v = vector_init(4);
 

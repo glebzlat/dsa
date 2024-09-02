@@ -75,7 +75,10 @@ void vector_prepend(vector* v, void* item) { vector_insert(v, item, 0); }
 void* vector_pop(vector* v) {
   assert(!vector_is_empty(v) && "vector_pop");
 
-  void* el = (char*)v->_data + (v->_size - 1) * v->_element_size;
+  u64 element_size = v->_element_size;
+  void* el = malloc(element_size);
+  void* data = (char*)v->_data + (v->_size - 1) * element_size;
+  memcpy(el, data, element_size);
   v->_size -= 1;
 
   if (v->_size == v->_capacity / 2) {
@@ -88,7 +91,8 @@ void* vector_pop(vector* v) {
 void* vector_pop_front(vector* v) {
   assert(!vector_is_empty(v) && "vector_pop");
 
-  void* el = v->_data;
+  void* el = malloc(v->_element_size);
+  memcpy(el, v->_data, v->_element_size);
 
   u64 element_size = v->_element_size;
   char* src;
@@ -117,8 +121,8 @@ void vector_delete(vector* v, u64 index) {
   char* dest;
 
   for (u64 i = index + 1; i < v->_size; ++i) {
-    src = (char*)v->_data + (i - 1) * element_size;
-    dest = (char*)v->_data + i * element_size;
+    src = (char*)v->_data + i * element_size;
+    dest = (char*)v->_data + (i - 1) * element_size;
     memcpy(dest, src, element_size);
   }
 
@@ -153,17 +157,21 @@ i64 vector_find(vector* v, int (*predicate)(void*)) {
 }
 
 void vector_resize(vector* v, u64 capacity) {
-  u64 new_capacity = v->_capacity + capacity;
+  assert(capacity < v->_max_capacity && "vector_resize");
+  assert(v->_size <= capacity && "vector_resize");
 
-  assert(new_capacity < v->_max_capacity && "vector_resize");
-  assert(v->_size <= new_capacity && "vector_resize");
-
-  if (new_capacity == v->_capacity) {
+  if (capacity == v->_capacity) {
     return;
   }
 
-  void* new_arr = malloc(new_capacity);
-  memcpy(new_arr, v->_data, v->_size * v->_element_size);
+  u64 size = v->_size;
+  if (size == capacity) {
+    size -= 1;
+  }
+
+  void* new_arr = malloc(capacity * v->_element_size);
+  memcpy(new_arr, v->_data, size * v->_element_size);
   free(v->_data);
   v->_data = new_arr;
+  v->_capacity = capacity;
 }
