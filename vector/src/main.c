@@ -14,7 +14,7 @@ int is_twenty(void* data) {
 
 int main(void) {
   {
-    printf("TEST: create and delete the vector");
+    printf("TEST: create and delete the vector\n");
 
     vector* v = vector_init(4);
     vector_deinit(v);
