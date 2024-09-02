@@ -141,10 +141,13 @@ int main(void) {
 
     void* p = vector_pop(v);
     assert(*(int32_t*)p == 0x11111111);
+    free(p);
+
+    p = vector_pop(v);
+    assert(*(int32_t*)p == 0x10101010);
+    free(p);
 
     vector_deinit(v);
-
-    free(p);
   }
 
   {
