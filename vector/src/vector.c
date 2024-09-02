@@ -164,14 +164,6 @@ void vector_resize(vector* v, u64 capacity) {
     return;
   }
 
-  u64 size = v->_size;
-  if (size == capacity) {
-    size -= 1;
-  }
-
-  void* new_arr = malloc(capacity * v->_element_size);
-  memcpy(new_arr, v->_data, size * v->_element_size);
-  free(v->_data);
-  v->_data = new_arr;
+  v->_data = realloc(v->_data, capacity * v->_element_size);
   v->_capacity = capacity;
 }
