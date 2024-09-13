@@ -3,21 +3,21 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <stdint.h>
+#include <stddef.h>
 
-typedef uint64_t u64;
-typedef int64_t i64;
+#define VECTOR_MAX_SIZE ((size_t)-1)
+#define VECTOR_NPOS ((size_t)-2)
 
 typedef struct {
-  u64 _element_size;
-  u64 _size;
-  u64 _capacity;
-  u64 _max_capacity;
+  size_t _element_size;
+  size_t _size;
+  size_t _capacity;
+  size_t _max_capacity;
   void* _data;
 } vector;
 
 /** Create a new vector */
-vector* vector_init(u64 element_size);
+vector* vector_init(size_t element_size);
 
 /** Destroy a vector
  *
@@ -26,14 +26,14 @@ vector* vector_init(u64 element_size);
 void vector_deinit(vector* v);
 
 /** Get the size of a vector */
-u64 vector_size(vector* v);
+size_t vector_size(vector* v);
 
 /** Get vector's capacity
  *
  * Capacity of a vector is an amount of elements that can be added without
  * vector resizing.
  */
-u64 vector_capacity(vector* v);
+size_t vector_capacity(vector* v);
 
 /** Check if vector is empty
  *
@@ -46,7 +46,7 @@ int vector_is_empty(vector* v);
  * Returns a pointer if index < size, otherwise causes program termination.
  * If NDEBUG is set, returns NULL pointer.
  */
-void* vector_at(vector* v, u64 index);
+void* vector_at(vector* v, size_t index);
 
 /** Add element to the end of a vector
  *
@@ -60,7 +60,7 @@ void vector_push(vector* v, void* item);
  *
  * Complexity: O(n) in common case, O(n^2) if the vector is resized
  */
-void vector_insert(vector* v, void* item, u64 index);
+void vector_insert(vector* v, void* item, size_t index);
 
 /** Prepend element to the beginning
  *
@@ -96,7 +96,7 @@ void* vector_pop_front(vector* v);
  *
  * Complexity: O(n)
  */
-void vector_delete(vector* v, u64 index);
+void vector_delete(vector* v, size_t index);
 
 /** Remove all elements on which predicate is true
  *
@@ -110,12 +110,12 @@ void vector_remove(vector* v, int (*predicate)(void*));
  *
  * Complexity: O(n)
  */
-i64 vector_find(vector* v, int (*predicate)(void*));
+size_t vector_find(vector* v, int (*predicate)(void*));
 
 /** Resize vector to the new capacity
  *
  * Complexity: O(n)
  */
-void vector_resize(vector* v, u64 capacity);
+void vector_resize(vector* v, size_t capacity);
 
 #endif

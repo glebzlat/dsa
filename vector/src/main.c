@@ -252,7 +252,7 @@ int main(void) {
     vector_push(v, &e10);
 
     assert(vector_find(v, is_ten) == 2);
-    assert(vector_find(v, is_twenty) == -1);
+    assert(vector_find(v, is_twenty) == VECTOR_NPOS);
 
     vector_deinit(v);
   }
