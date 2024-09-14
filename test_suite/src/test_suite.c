@@ -24,7 +24,9 @@ test_suite* test_suite_init(int argc, char** argv) {
   }
 
   test_suite* suite = (test_suite*)malloc(sizeof(test_suite));
-  suite->test_count = 1;
+  suite->succeed_count = 0;
+  suite->skipped_count = 0;
+  suite->failed_count = 0;
   suite->failfast = failfast;
   suite->nop = nop;
   suite->status = 0;
@@ -32,6 +34,11 @@ test_suite* test_suite_init(int argc, char** argv) {
 }
 
 int test_suite_finish(test_suite* suite) {
+  int total = suite->succeed_count + suite->skipped_count + suite->failed_count;
+  printf("Ran %d tests\n", total);
+  printf("  succeed %d\n", suite->succeed_count);
+  printf("  skipped %d\n", suite->skipped_count);
+  printf("  failed  %d\n", suite->failed_count);
   int status = suite->status;
   free(suite);
   return status;
