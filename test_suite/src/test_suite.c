@@ -20,6 +20,9 @@ test_suite* test_suite_init(int argc, char** argv) {
     } else if (strcmp(argv[i], failfast_long_opt) == 0 ||
                strcmp(argv[i], failfast_short_opt) == 0) {
       failfast = 1;
+    } else {
+      printf("%s [-h|--help] [-ff|--fail-fast]\n", argv[0]);
+      nop = 1;
     }
   }
 
@@ -35,10 +38,12 @@ test_suite* test_suite_init(int argc, char** argv) {
 
 int test_suite_finish(test_suite* suite) {
   int total = suite->succeed_count + suite->skipped_count + suite->failed_count;
-  printf("Ran %d tests\n", total);
-  printf("  succeed %d\n", suite->succeed_count);
-  printf("  skipped %d\n", suite->skipped_count);
-  printf("  failed  %d\n", suite->failed_count);
+  if (!suite->nop) {
+    printf("Ran %d tests\n", total);
+    printf("  succeed %d\n", suite->succeed_count);
+    printf("  skipped %d\n", suite->skipped_count);
+    printf("  failed  %d\n", suite->failed_count);
+  }
   int status = suite->status;
   free(suite);
   return status;
