@@ -23,7 +23,7 @@ test_suite* test_suite_init(int argc, char** argv) {
     }
   }
 
-  test_suite* suite = (test_suite*)malloc(sizeof(test_suite));
+  test_suite* suite = calloc(1, sizeof(test_suite));
   suite->succeed_count = 0;
   suite->skipped_count = 0;
   suite->failed_count = 0;
