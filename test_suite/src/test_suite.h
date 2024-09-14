@@ -7,30 +7,30 @@
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-#define ASSERT_EQUAL(suite, lhs, rhs, type)                                    \
+#define ASSERT_EQUAL(lhs, rhs, type)                                    \
   {                                                                            \
-    assert(suite->test_case_name && "assertion outside the test case");        \
+    assert(__test_suite->test_case_name && "assertion outside the test case"); \
     type __lhs = (lhs);                                                        \
     type __rhs = (rhs);                                                        \
     char message[] = "expected " STR(lhs) " equal to " STR(rhs);               \
     if (__lhs != __rhs) {                                                      \
-      printf("Case \"%s\": %s\n", suite->test_case_name, message);             \
-      suite->status = 1;                                                       \
-      suite->failed_count++;                                                   \
+      printf("Case \"%s\": %s\n", __test_suite->test_case_name, message);      \
+      __test_suite->status = 1;                                                \
+      __test_suite->failed_count++;                                            \
       break;                                                                   \
     }                                                                          \
   }
 
-#define ASSERT_NOT_EQUAL(suite, lhs, rhs, type)                                \
+#define ASSERT_NOT_EQUAL(lhs, rhs, type)                                \
   {                                                                            \
-    assert(suite->test_case_name && "assertion outside the test case");        \
+    assert(__test_suite->test_case_name && "assertion outside the test case"); \
     type __lhs = (lhs);                                                        \
     type __rhs = (rhs);                                                        \
     char message[] = "expected " STR(lhs) " not equal to " STR(rhs);           \
     if (__lhs == __rhs) {                                                      \
-      printf("Case \"%s\": %s\n", suite->test_case_name, message);             \
-      suite->status = 1;                                                       \
-      suite->failed_count++;                                                   \
+      printf("Case \"%s\": %s\n", __test_suite->test_case_name, message);      \
+      __test_suite->status = 1;                                                \
+      __test_suite->failed_count++;                                            \
       break;                                                                   \
     }                                                                          \
   }
@@ -38,36 +38,37 @@
 #define TEST_CASE(suite, name, body)                                           \
   do {                                                                         \
     assert(!suite->test_case_name && "nested test cases are not allowed");     \
-    suite->test_case_name = name;                                              \
+    test_suite* __test_suite = suite;                                          \
+    __test_suite->test_case_name = name;                                       \
     do {                                                                       \
       if (!suite->nop && !(suite->status == 0 && suite->failfast)) {           \
         body;                                                                  \
       }                                                                        \
-      suite->succeed_count++;                                                  \
+      __test_suite->succeed_count++;                                           \
     } while (0);                                                               \
-    suite->test_case_name = NULL;                                              \
+    __test_suite->test_case_name = NULL;                                       \
   } while (0)
 
-#define TEST_FAIL(suite, reason)                                               \
+#define TEST_FAIL(reason)                                               \
   {                                                                            \
-    assert(suite->test_case_name && "assertion outside the test case");        \
-    suite->status = 1;                                                         \
-    suite->failed_count++;                                                     \
-    printf("Case \"%s\" failed: %s\n", suite->test_case_name, reason);         \
+    assert(__test_suite->test_case_name && "assertion outside the test case"); \
+    __test_suite->status = 1;                                                  \
+    __test_suite->failed_count++;                                              \
+    printf("Case \"%s\" failed: %s\n", __test_suite->test_case_name, reason);  \
     break;                                                                     \
   }
 
-#define TEST_SUCCESS(suite)                                                    \
+#define TEST_SUCCESS()                                                    \
   {                                                                            \
-    assert(suite->test_case_name && "assertion outside the test case");        \
-    suite->succeed_count++;                                                    \
+    assert(__test_suite->test_case_name && "assertion outside the test case"); \
+    __test_suite->succeed_count++;                                             \
     break;                                                                     \
   }
 
-#define TEST_SKIP(suite, reason)                                               \
+#define TEST_SKIP(reason)                                               \
   {                                                                            \
-    assert(suite->test_case_name && "assertion outside the test case");        \
-    suite->skipped_count++;                                                    \
+    assert(__test_suite->test_case_name && "assertion outside the test case"); \
+    __test_suite->skipped_count++;                                             \
     break;                                                                     \
   }
 
