@@ -7,7 +7,7 @@
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-#define ASSERT_EQUAL(lhs, rhs, type)                                    \
+#define ASSERT_EQUAL(lhs, rhs, type)                                           \
   {                                                                            \
     assert(__test_suite->test_case_name && "assertion outside the test case"); \
     type __lhs = (lhs);                                                        \
@@ -21,7 +21,7 @@
     }                                                                          \
   }
 
-#define ASSERT_NOT_EQUAL(lhs, rhs, type)                                \
+#define ASSERT_NOT_EQUAL(lhs, rhs, type)                                       \
   {                                                                            \
     assert(__test_suite->test_case_name && "assertion outside the test case"); \
     type __lhs = (lhs);                                                        \
@@ -38,18 +38,19 @@
 #define TEST_CASE(suite, name, body)                                           \
   do {                                                                         \
     assert(!suite->test_case_name && "nested test cases are not allowed");     \
+    if (suite->nop || (suite->status != 0 && suite->failfast)) {               \
+      break;                                                                   \
+    }                                                                          \
     test_suite* __test_suite = suite;                                          \
     __test_suite->test_case_name = name;                                       \
     do {                                                                       \
-      if (!suite->nop && !(suite->status == 0 && suite->failfast)) {           \
-        body;                                                                  \
-      }                                                                        \
+      body;                                                                    \
       __test_suite->succeed_count++;                                           \
     } while (0);                                                               \
     __test_suite->test_case_name = NULL;                                       \
   } while (0)
 
-#define TEST_FAIL(reason)                                               \
+#define TEST_FAIL(reason)                                                      \
   {                                                                            \
     assert(__test_suite->test_case_name && "assertion outside the test case"); \
     __test_suite->status = 1;                                                  \
@@ -58,14 +59,14 @@
     break;                                                                     \
   }
 
-#define TEST_SUCCESS()                                                    \
+#define TEST_SUCCESS()                                                         \
   {                                                                            \
     assert(__test_suite->test_case_name && "assertion outside the test case"); \
     __test_suite->succeed_count++;                                             \
     break;                                                                     \
   }
 
-#define TEST_SKIP(reason)                                               \
+#define TEST_SKIP(reason)                                                      \
   {                                                                            \
     assert(__test_suite->test_case_name && "assertion outside the test case"); \
     __test_suite->skipped_count++;                                             \
