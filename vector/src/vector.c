@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 vector* vector_init(size_t element_size) {
   vector* v = (vector*)malloc(sizeof(vector));
@@ -36,7 +37,7 @@ void* vector_at(vector* v, size_t index) {
     return NULL
   }
 #endif
-  // OMG this is so DANGEROUS
+
   return (char*)v->_data + index * v->_element_size;
 }
 
@@ -166,4 +167,74 @@ void vector_resize(vector* v, size_t capacity) {
 
   v->_data = realloc(v->_data, capacity * v->_element_size);
   v->_capacity = capacity;
+}
+
+void vector_replace(vector* v, size_t index, void* data) {
+  char* start = (char*)v->_data + index * v->_element_size;
+  memcpy(start, data, v->_element_size);
+}
+
+static void _quicksort(vector* v, size_t start, size_t end,
+                       int (*cmp)(void*, void*));
+
+void vector_quicksort(vector* v, int (*cmp)(void*, void*)) {
+  if (vector_is_empty(v)) return;
+  _quicksort(v, 0, vector_size(v) - 1, cmp);
+}
+
+static size_t median_of_three(size_t x, size_t y, size_t z);
+
+void _quicksort(vector* v, size_t start, size_t end, int (*cmp)(void*, void*)) {
+  if (start >= end)
+    return;
+
+  // https://research.google/blog/extra-extra-read-all-about-it-nearly-all-binary-searches-and-mergesorts-are-broken/
+  size_t pivot_idx = median_of_three(start, (start + end) >> 1, end);
+  void* pivot = vector_at(v, pivot_idx);
+  size_t i = start, j = end;
+  void* tmp = malloc(v->_element_size);
+
+  while (i <= j) {
+    while (cmp(vector_at(v, i), pivot) < 0)
+      ++i;
+    while (cmp(vector_at(v, j), pivot) > 0)
+      --j;
+
+    if (i <= j) {
+      memcpy(tmp, vector_at(v, i), v->_element_size);
+      vector_replace(v, i, vector_at(v, j));
+      vector_replace(v, j, tmp);
+      ++i, --j;
+    }
+  }
+  free(tmp);
+
+  if (start < j)
+    _quicksort(v, start, j, cmp);
+  if (i < end)
+    _quicksort(v, i, end, cmp);
+}
+
+size_t median_of_three(size_t x, size_t y, size_t z) {
+  if ((y > x && z > y) || (y < x && y > z))
+    return y;
+  if ((x > y && z > x) || (x < y && x > z))
+    return x;
+  return z;
+}
+
+int vector_cmp(vector* a, vector* b, int (*cmp)(void*, void*)) {
+  if (a->_size < b->_size)
+    return -1;
+  if (a->_size > b->_size)
+    return 1;
+
+  int result = 0;
+  for (size_t i = 0; i < a->_size; ++i) {
+    result = cmp(vector_at(a, i), vector_at(b, i));
+    if (result != 0)
+      return result;
+  }
+
+  return 0;
 }

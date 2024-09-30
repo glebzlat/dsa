@@ -5,8 +5,8 @@
 
 #include <stddef.h>
 
-#define VECTOR_MAX_SIZE ((size_t)-1)
-#define VECTOR_NPOS ((size_t)-2)
+#define VECTOR_MAX_SIZE ((size_t) - 1)
+#define VECTOR_NPOS ((size_t) - 2)
 
 typedef struct {
   size_t _element_size;
@@ -106,7 +106,8 @@ void vector_remove(vector* v, int (*predicate)(void*));
 
 /** Return an index of the first element on which predicate is true
  *
- * If there is no element on which predicate returns true, -1 is returned.
+ * If there is no element on which predicate returns true, VECTOR_NPOS is
+ * returned.
  *
  * Complexity: O(n)
  */
@@ -117,5 +118,30 @@ size_t vector_find(vector* v, int (*predicate)(void*));
  * Complexity: O(n)
  */
 void vector_resize(vector* v, size_t capacity);
+
+/** Replace element at index */
+void vector_replace(vector* v, size_t idx, void* data);
+
+/** Sort the vector using quicksort algorithm
+ *
+ * Comparison function must return integer value that is less than 0 if the
+ * first argument is less than the second, value greater than 0 if the first
+ * element is greater, and 0 if they are equal.
+ *
+ * @param v vector
+ * @param cmp comparison function
+ */
+void vector_quicksort(vector* v, int (*cmp)(void*, void*));
+
+/** Check whether vectors are equal
+ *
+ * Comparison function must return integer value that is less than 0 if the
+ * first argument is less than the second, value greater than 0 if the first
+ * element is greater, and 0 if they are equal.
+ *
+ * @returns 0 if a and b are equal, <0 if a is less than b, >0 if a is greater
+ * than b
+ */
+int vector_cmp(vector* a, vector* b, int (*cmp)(void*, void*));
 
 #endif

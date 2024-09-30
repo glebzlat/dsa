@@ -35,6 +35,30 @@
     }                                                                          \
   }
 
+#define ASSERT_TRUE(assertion)                                                 \
+  {                                                                            \
+    assert(__test_suite->test_case_name && "assertion outside the test case"); \
+    char message[] = "expected " STR(assertion) " to be true";                 \
+    if ((assertion) != 1) {                                                    \
+      printf("Case \"%s\": %s\n", __test_suite->test_case_name, message);      \
+      __test_suite->status = 1;                                                \
+      __test_suite->failed_count++;                                            \
+      break;                                                                   \
+    }                                                                          \
+  }
+
+#define ASSERT_FALSE(assertion)                                                \
+  {                                                                            \
+    assert(__test_suite->test_case_name && "assertion outside the test case"); \
+    char message[] = "expected " STR(assertion) " to be false";                \
+    if ((assertion)) {                                                         \
+      printf("Case \"%s\": %s\n", __test_suite->test_case_name, message);      \
+      __test_suite->status = 1;                                                \
+      __test_suite->failed_count++;                                            \
+      break;                                                                   \
+    }                                                                          \
+  }
+
 #define TEST_CASE(suite, name, body)                                           \
   do {                                                                         \
     assert(!suite->test_case_name && "nested test cases are not allowed");     \
