@@ -2,7 +2,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 vector* vector_init(size_t element_size) {
   vector* v = (vector*)malloc(sizeof(vector));
