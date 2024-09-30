@@ -1,39 +1,31 @@
-#include "vector.h"
-#include <assert.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-int is_ten(void* data) {
-  return *(int*)data == 10;
-}
+#include <test_suite.h>
+#include <vector.h>
 
-int is_twenty(void* data) {
-  return *(int*)data == 20;
-}
+int is_ten(void* data) { return *(int*)data == 10; }
 
-int main(void) {
-  {
-    printf("TEST: create and delete the vector\n");
+int is_twenty(void* data) { return *(int*)data == 20; }
 
+int main(int argc, char** argv) {
+  test_suite* suite = test_suite_init(argc, argv);
+
+  TEST_CASE(suite, "Create and delete", {
     vector* v = vector_init(4);
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: vector is empty\n");
-
+  TEST_CASE(suite, "Empty vector", {
     vector* v = vector_init(4);
 
     assert(vector_is_empty(v));
     assert(vector_size(v) == 0);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: push elements to the vector\n");
-
+  TEST_CASE(suite, "Push elements", {
     vector* v = vector_init(4);
 
     int32_t e1 = 1;
@@ -51,11 +43,9 @@ int main(void) {
     assert(*(int32_t*)vector_at(v, 2) == 3);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: prepend elements to the vector\n");
-
+  TEST_CASE(suite, "Prepend elements", {
     vector* v = vector_init(4);
 
     int32_t e1 = 1;
@@ -72,11 +62,9 @@ int main(void) {
     assert(*(int32_t*)vector_at(v, 2) == 3);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: insert elements into the vector\n");
-
+  TEST_CASE(suite, "Insert elements", {
     vector* v = vector_init(4);
 
     int32_t e0 = 0;
@@ -96,11 +84,9 @@ int main(void) {
     assert(*(int32_t*)vector_at(v, 3) == 3);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: pop elements from the vector\n");
-
+  TEST_CASE(suite, "Pop elements", {
     vector* v = vector_init(4);
 
     int32_t e1 = 1;
@@ -125,11 +111,9 @@ int main(void) {
     free(p1);
     free(p2);
     free(p3);
-  }
+  });
 
-  {
-    printf("TEST: vector is resized when an element is popped\n");
-
+  TEST_CASE(suite, "Vector autoresize", {
     vector* v = vector_init(4);
 
     for (int32_t i = 1; i <= 17; ++i) {
@@ -148,11 +132,9 @@ int main(void) {
     free(p);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: pop elements from the beginning\n");
-
+  TEST_CASE(suite, "Unshift elements", {
     vector* v = vector_init(4);
 
     int32_t e1 = 1;
@@ -175,11 +157,9 @@ int main(void) {
     assert(vector_size(v) == 0);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: delete element at index\n");
-
+  TEST_CASE(suite, "Delete element at index", {
     vector* v = vector_init(4);
 
     int32_t e1 = 1;
@@ -201,11 +181,9 @@ int main(void) {
     assert(vector_size(v) == 0);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: remove all elements on which predicate is true\n");
-
+  TEST_CASE(suite, "Remove elements on which predicate is true", {
     vector* v = vector_init(4);
 
     int32_t e1 = 1;
@@ -232,12 +210,9 @@ int main(void) {
     assert(*(int32_t*)vector_at(v, 2) == 3);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: get an index of an element on which predicate is true\n");
-    printf("      if there is no such element, returns -1\n");
-
+  TEST_CASE(suite, "Find first element on which predicate is true", {
     vector* v = vector_init(4);
 
     int32_t e1 = 1;
@@ -255,12 +230,9 @@ int main(void) {
     assert(vector_find(v, is_twenty) == VECTOR_NPOS);
 
     vector_deinit(v);
-  }
+  });
 
-  {
-    printf("TEST: vector allocates more memory when it is full\n");
-    printf("      initial capacity = 16 and increases by 2\n");
-
+  TEST_CASE(suite, "Auto memory allocation", {
     vector* v = vector_init(4);
 
     assert(vector_capacity(v) == 16);
@@ -272,7 +244,7 @@ int main(void) {
     assert(vector_capacity(v) == 32);
 
     vector_deinit(v);
-  }
+  });
 
-  return 0;
+  return test_suite_finish(suite);
 }
