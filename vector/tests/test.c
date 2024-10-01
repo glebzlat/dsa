@@ -442,5 +442,92 @@ int main(int argc, char** argv) {
     vector_deinit(clue);
   });
 
+  TEST_CASE(suite, "Binary search", {
+    vector* v = vector_init(4);
+
+    for (int32_t i = 0; i < 20; ++i) {
+      vector_push(v, &i);
+    }
+
+    int32_t key = 5;
+    size_t idx = vector_bsearch(v, &key, cmp_int32_t);
+
+    printf("%zi\n", idx);
+    ASSERT_EQUAL(idx, 5, size_t);
+
+    vector_deinit(v);
+  });
+
+  TEST_CASE(suite, "Binary search element not found", {
+    vector* v = vector_init(4);
+
+    for (int32_t i = 0; i < 20; i += 2) {
+      vector_push(v, &i);
+    }
+
+    int32_t key = 5;
+    size_t idx = vector_bsearch(v, &key, cmp_int32_t);
+
+    ASSERT_EQUAL(idx, VECTOR_NPOS, size_t);
+
+    vector_deinit(v);
+  });
+
+  TEST_CASE(suite, "Binary search on empty vector", {
+    vector* v = vector_init(4);
+
+    int32_t key = 5;
+    size_t idx = vector_bsearch(v, &key, cmp_int32_t);
+
+    ASSERT_EQUAL(idx, VECTOR_NPOS, size_t);
+
+    vector_deinit(v);
+  });
+
+  TEST_CASE(suite, "Binary search on vector of one element", {
+    vector* v = vector_init(4);
+
+    int32_t e = 1;
+    vector_push(v, &e);
+
+    size_t idx = vector_bsearch(v, &e, cmp_int32_t);
+
+    ASSERT_EQUAL(idx, 0, size_t);
+
+    vector_deinit(v);
+  });
+
+  TEST_CASE(suite, "Binary search on vector of two elements", {
+    vector* v = vector_init(4);
+
+    int32_t e1 = 1;
+    int32_t e2 = 2;
+    vector_push(v, &e1);
+    vector_push(v, &e2);
+
+    size_t idx = vector_bsearch(v, &e1, cmp_int32_t);
+    ASSERT_EQUAL(idx, 0, size_t);
+
+    idx = vector_bsearch(v, &e2, cmp_int32_t);
+    ASSERT_EQUAL(idx, 1, size_t);
+
+    vector_deinit(v);
+  });
+
+  TEST_CASE(suite, "Binary search on vector of same elements", {
+    vector* v = vector_init(4);
+
+    int32_t e = 32;
+    for (int i = 0; i < 5; ++i) {
+      vector_push(v, &e);
+    }
+
+    size_t idx = vector_bsearch(v, &e, cmp_int32_t);
+
+    ASSERT_EQUAL(idx, 2, size_t);
+
+    vector_deinit(v);
+  });
+
   return test_suite_finish(suite);
 }

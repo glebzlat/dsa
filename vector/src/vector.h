@@ -133,6 +133,21 @@ void vector_replace(vector* v, size_t idx, void* data);
  */
 void vector_quicksort(vector* v, int (*cmp)(void*, void*));
 
+/** Search the key in a vector using binary search algorithm
+ *
+ * Comparison function must return integer value that is less than 0 if the
+ * first argument is less than the second, value greater than 0 if the first
+ * element is greater, and 0 if they are equal.
+ *
+ * If the vector is empty, returns VECTOR_NPOS.
+ *
+ * @param v vector
+ * @param key key to search
+ * @param cmp comparison function
+ * @returns index of an element or VECTOR_NPOS if not found
+ */
+size_t vector_bsearch(vector* v, void* key, int (*cmp)(void*, void*));
+
 /** Check whether vectors are equal
  *
  * Comparison function must return integer value that is less than 0 if the

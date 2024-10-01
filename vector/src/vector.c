@@ -177,7 +177,8 @@ static void _quicksort(vector* v, size_t start, size_t end,
                        int (*cmp)(void*, void*));
 
 void vector_quicksort(vector* v, int (*cmp)(void*, void*)) {
-  if (vector_is_empty(v)) return;
+  if (vector_is_empty(v))
+    return;
   _quicksort(v, 0, vector_size(v) - 1, cmp);
 }
 
@@ -220,6 +221,25 @@ size_t median_of_three(size_t x, size_t y, size_t z) {
   if ((x > y && z > x) || (x < y && x > z))
     return x;
   return z;
+}
+
+size_t vector_bsearch(vector* v, void* key, int (*cmp)(void*, void*)) {
+  if (vector_is_empty(v)) return VECTOR_NPOS;
+
+  size_t start = 0, end = vector_size(v) - 1, mid;
+
+  while (start <= end) {
+    mid = start + ((end - start) >> 1);
+    int compare = cmp(key, vector_at(v, mid));
+    if (compare > 0)
+      start = mid + 1;
+    else if (compare < 0)
+      end = mid - 1;
+    else
+      return mid;
+  }
+
+  return VECTOR_NPOS;
 }
 
 int vector_cmp(vector* a, vector* b, int (*cmp)(void*, void*)) {
