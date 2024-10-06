@@ -40,6 +40,5 @@ if(DSA_TESTS)
     )
 endif()
 
-add_subdirectory(test_suite)
 add_subdirectory(vector)
 add_subdirectory(doubly_list)
