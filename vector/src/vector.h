@@ -52,7 +52,7 @@ void* vector_at(vector* v, size_t index);
  *
  * Complexity: O(1), O(n) if the vector is resized
  */
-void vector_push(vector* v, void* item);
+void vector_push(vector* v, void const* item);
 
 /** Insert element at index
  *
@@ -60,7 +60,7 @@ void vector_push(vector* v, void* item);
  *
  * Complexity: O(n) in common case, O(n^2) if the vector is resized
  */
-void vector_insert(vector* v, void* item, size_t index);
+void vector_insert(vector* v, void const* item, size_t index);
 
 /** Prepend element to the beginning
  *
@@ -68,7 +68,7 @@ void vector_insert(vector* v, void* item, size_t index);
  *
  * Complexity: O(n), O(n^2) if the vector is resized
  */
-void vector_prepend(vector* v, void* item);
+void vector_prepend(vector* v, void const* item);
 
 /** Remove element from the end of a vector and return it
  *
@@ -102,7 +102,7 @@ void vector_delete(vector* v, size_t index);
  *
  * Complexity: O(n^2) in common case, O(n^3) if the vector is shrunk
  */
-void vector_remove(vector* v, int (*predicate)(void*));
+void vector_remove(vector* v, int (*predicate)(void const*));
 
 /** Return an index of the first element on which predicate is true
  *
@@ -111,7 +111,7 @@ void vector_remove(vector* v, int (*predicate)(void*));
  *
  * Complexity: O(n)
  */
-size_t vector_find(vector* v, int (*predicate)(void*));
+size_t vector_find(vector* v, int (*predicate)(void const*));
 
 /** Resize vector to the new capacity
  *
@@ -120,7 +120,7 @@ size_t vector_find(vector* v, int (*predicate)(void*));
 void vector_resize(vector* v, size_t capacity);
 
 /** Replace element at index */
-void vector_replace(vector* v, size_t idx, void* data);
+void vector_replace(vector* v, size_t idx, void const* data);
 
 /** Sort the vector using quicksort algorithm
  *
@@ -131,7 +131,7 @@ void vector_replace(vector* v, size_t idx, void* data);
  * @param v vector
  * @param cmp comparison function
  */
-void vector_quicksort(vector* v, int (*cmp)(void*, void*));
+void vector_quicksort(vector* v, int (*cmp)(void const*, void const*));
 
 /** Search the key in a vector using binary search algorithm
  *
@@ -146,7 +146,8 @@ void vector_quicksort(vector* v, int (*cmp)(void*, void*));
  * @param cmp comparison function
  * @returns index of an element or VECTOR_NPOS if not found
  */
-size_t vector_bsearch(vector* v, void* key, int (*cmp)(void*, void*));
+size_t vector_bsearch(vector* v, void const* key,
+                      int (*cmp)(void const*, void const*));
 
 /** Check whether vectors are equal
  *
@@ -157,6 +158,6 @@ size_t vector_bsearch(vector* v, void* key, int (*cmp)(void*, void*));
  * @returns 0 if a and b are equal, <0 if a is less than b, >0 if a is greater
  * than b
  */
-int vector_cmp(vector* a, vector* b, int (*cmp)(void*, void*));
+int vector_cmp(vector* a, vector* b, int (*cmp)(void const*, void const*));
 
 #endif

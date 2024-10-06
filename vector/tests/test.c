@@ -6,11 +6,11 @@
 
 /********************************* TESTS *************************************/
 
-int is_ten(void* data) { return *(int*)data == 10; }
+int is_ten(void const* data) { return *(int*)data == 10; }
 
-int is_twenty(void* data) { return *(int*)data == 20; }
+int is_twenty(void const* data) { return *(int*)data == 20; }
 
-int cmp_int32_t(void* a, void* b) {
+int cmp_int32_t(void const* a, void const* b) {
   int32_t _a = *(int32_t*)a, _b = *(int32_t*)b;
   if (_a < _b)
     return -1;
