@@ -8,7 +8,10 @@ option(GAL_TESTS "Compile and run tests" OFF)
 
 project(gal LANGUAGES C)
 
-set(SOURCES src/gal/vector.c)
+set(SOURCES
+    src/gal/vector.c
+    src/gal/allocator.c
+)
 
 add_library(gal ${SOURCES})
 target_include_directories(gal PUBLIC src)
