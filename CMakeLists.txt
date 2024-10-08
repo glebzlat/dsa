@@ -2,13 +2,19 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(DSA_TESTS "Compile and run tests" OFF)
-
-project(data_structures_algorithms LANGUAGES C)
-
 include(FetchContent)
 
-if(DSA_TESTS)
+option(GAL_TESTS "Compile and run tests" OFF)
+
+project(gal LANGUAGES C)
+
+set(SOURCES src/gal/vector.c)
+
+add_library(gal ${SOURCES})
+target_include_directories(gal PUBLIC src)
+target_compile_options(gal PUBLIC -Wall -Wpedantic -Wextra)
+
+if(GAL_TESTS)
     enable_testing()
     set(CMAKE_BUILD_TYPE Debug)
 
@@ -38,7 +44,6 @@ if(DSA_TESTS)
         VERBATIM
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
-endif()
 
-add_subdirectory(vector)
-add_subdirectory(doubly_list)
+    add_subdirectory(tests)
+endif()

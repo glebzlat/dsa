@@ -40,7 +40,7 @@ void* vector_at(vector* v, size_t index) {
   return (char*)v->_data + index * v->_element_size;
 }
 
-void vector_push(vector* v, void* item) {
+void vector_push(vector* v, void const* item) {
   if (v->_size == v->_capacity) {
     vector_resize(v, v->_capacity * 2);
   }
@@ -50,7 +50,7 @@ void vector_push(vector* v, void* item) {
   v->_size += 1;
 }
 
-void vector_insert(vector* v, void* item, size_t index) {
+void vector_insert(vector* v, void const* item, size_t index) {
   if (v->_size == v->_capacity) {
     vector_resize(v, v->_capacity * 2);
   }
@@ -70,7 +70,7 @@ void vector_insert(vector* v, void* item, size_t index) {
   memcpy(src, item, element_size);
 }
 
-void vector_prepend(vector* v, void* item) { vector_insert(v, item, 0); }
+void vector_prepend(vector* v, void const* item) { vector_insert(v, item, 0); }
 
 void* vector_pop(vector* v) {
   assert(!vector_is_empty(v) && "vector_pop");
@@ -133,7 +133,7 @@ void vector_delete(vector* v, size_t index) {
   }
 }
 
-void vector_remove(vector* v, int (*predicate)(void*)) {
+void vector_remove(vector* v, int (*predicate)(void const*)) {
   size_t element_size = v->_element_size;
   char* el;
   for (size_t i = 0; i < v->_size; ++i) {
@@ -144,7 +144,7 @@ void vector_remove(vector* v, int (*predicate)(void*)) {
   }
 }
 
-size_t vector_find(vector* v, int (*predicate)(void*)) {
+size_t vector_find(vector* v, int (*predicate)(void const*)) {
   size_t element_size = v->_element_size;
   char* el;
   for (size_t i = 0; i < v->_size; ++i) {
@@ -168,15 +168,15 @@ void vector_resize(vector* v, size_t capacity) {
   v->_capacity = capacity;
 }
 
-void vector_replace(vector* v, size_t index, void* data) {
+void vector_replace(vector* v, size_t index, void const* data) {
   char* start = (char*)v->_data + index * v->_element_size;
   memcpy(start, data, v->_element_size);
 }
 
 static void _quicksort(vector* v, size_t start, size_t end,
-                       int (*cmp)(void*, void*));
+                       int (*cmp)(void const*, void const*));
 
-void vector_quicksort(vector* v, int (*cmp)(void*, void*)) {
+void vector_quicksort(vector* v, int (*cmp)(void const*, void const*)) {
   if (vector_is_empty(v))
     return;
   _quicksort(v, 0, vector_size(v) - 1, cmp);
@@ -184,7 +184,8 @@ void vector_quicksort(vector* v, int (*cmp)(void*, void*)) {
 
 static size_t median_of_three(size_t x, size_t y, size_t z);
 
-void _quicksort(vector* v, size_t start, size_t end, int (*cmp)(void*, void*)) {
+void _quicksort(vector* v, size_t start, size_t end,
+                int (*cmp)(void const*, void const*)) {
   if (start >= end)
     return;
 
@@ -223,8 +224,10 @@ size_t median_of_three(size_t x, size_t y, size_t z) {
   return z;
 }
 
-size_t vector_bsearch(vector* v, void* key, int (*cmp)(void*, void*)) {
-  if (vector_is_empty(v)) return VECTOR_NPOS;
+size_t vector_bsearch(vector* v, void const* key,
+                      int (*cmp)(void const*, void const*)) {
+  if (vector_is_empty(v))
+    return VECTOR_NPOS;
 
   size_t start = 0, end = vector_size(v) - 1, mid;
 
@@ -242,7 +245,7 @@ size_t vector_bsearch(vector* v, void* key, int (*cmp)(void*, void*)) {
   return VECTOR_NPOS;
 }
 
-int vector_cmp(vector* a, vector* b, int (*cmp)(void*, void*)) {
+int vector_cmp(vector* a, vector* b, int (*cmp)(void const*, void const*)) {
   if (a->_size < b->_size)
     return -1;
   if (a->_size > b->_size)

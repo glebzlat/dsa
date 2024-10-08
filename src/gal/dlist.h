@@ -1,7 +1,5 @@
-/** Doubly linked list */
-
-#ifndef DLIST_H
-#define DLIST_H
+#ifndef GAL_DLIST_H
+#define GAL_DLIST_H
 
 #include <stddef.h>
 

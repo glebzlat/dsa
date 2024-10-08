@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include <check.h>
-#include <vector.h>
+#include <gal/vector.h>
 
 /********************************* TESTS *************************************/
 
