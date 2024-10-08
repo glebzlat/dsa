@@ -14,6 +14,8 @@ add_library(gal ${SOURCES})
 target_include_directories(gal PUBLIC src)
 target_compile_options(gal PUBLIC -Wall -Wpedantic -Wextra)
 
+set(FETCHCONTENT_QUIET FALSE)
+
 if(GAL_TESTS)
     enable_testing()
     set(CMAKE_BUILD_TYPE Debug)
@@ -21,6 +23,7 @@ if(GAL_TESTS)
     FetchContent_Declare(check
         GIT_REPOSITORY https://github.com/libcheck/check
         GIT_TAG 0.15.2
+        GIT_PROGRESS TRUE
     )
     FetchContent_MakeAvailable(check)
 
